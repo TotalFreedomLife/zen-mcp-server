@@ -38,7 +38,7 @@ class OpenAIModelProvider(OpenAICompatibleProvider):
             supports_temperature=True,  # Regular models accept temperature parameter
             temperature_constraint=create_temperature_constraint("fixed"),
             description="GPT-5 Latest (400K context, 128K output) - Most advanced GPT-5 model with reasoning support",
-            aliases=["gpt5-latest", "gpt-5-latest", "gpt5", "gpt-5", "openai"],
+            aliases=["gpt5-latest", "gpt-5-latest", "gpt5", "gpt-5", "openai", "gpt"],
         ),
         "gpt-4.1": ModelCapabilities(
             provider=ProviderType.OPENAI,

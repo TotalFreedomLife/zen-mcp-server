@@ -40,7 +40,7 @@ class XAIModelProvider(OpenAICompatibleProvider):
             supports_temperature=True,
             temperature_constraint=create_temperature_constraint("range"),
             description="GROK-4 (256K context) - Frontier multimodal reasoning model with advanced capabilities",
-            aliases=["grok", "grok4", "grok-4"],
+            aliases=["grok4", "grok-4", "grok"],
         ),
         "grok-3": ModelCapabilities(
             provider=ProviderType.XAI,

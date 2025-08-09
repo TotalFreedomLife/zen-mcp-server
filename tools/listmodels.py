@@ -110,8 +110,18 @@ class ListModelsTool(BaseTool):
                 output_lines.append("**Status**: Configured and available")
                 output_lines.append("\n**Models**:")
 
-                # Get models from the provider's model configurations
+                # Get models from the provider's model configurations and apply restrictions
+                from utils.model_restrictions import get_restriction_service
+                restriction_service = get_restriction_service()
+                
+                models_shown = []
                 for model_name, capabilities in provider.get_model_configurations().items():
+                    # Check if this model is allowed by restrictions
+                    if not restriction_service.is_allowed(provider_type, model_name):
+                        continue
+                    
+                    models_shown.append(model_name)
+                    
                     # Get description and context from the ModelCapabilities object
                     description = capabilities.description or "No description available"
                     context_window = capabilities.context_window
@@ -138,10 +148,11 @@ class ListModelsTool(BaseTool):
                     elif "Advanced reasoning" in description:
                         output_lines.append("  - Advanced reasoning and complex analysis")
 
-                # Show aliases for this provider
+                # Show aliases for this provider - only for allowed models
                 aliases = []
                 for model_name, capabilities in provider.get_model_configurations().items():
-                    if capabilities.aliases:
+                    # Only show aliases for models that are allowed
+                    if model_name in models_shown and capabilities.aliases:
                         for alias in capabilities.aliases:
                             aliases.append(f"- `{alias}` → `{model_name}`")
 
