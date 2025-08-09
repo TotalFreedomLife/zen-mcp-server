@@ -114,10 +114,17 @@ class ListModelsTool(BaseTool):
                 from utils.model_restrictions import get_restriction_service
                 restriction_service = get_restriction_service()
                 
+                # Debug logging
+                logger.debug(f"Provider {provider_type.value} - Total models: {len(provider.get_model_configurations())}")
+                logger.debug(f"Global allowed: {restriction_service.global_allowed}")
+                logger.debug(f"Global disabled: {restriction_service.global_disabled}")
+                
                 models_shown = []
                 for model_name, capabilities in provider.get_model_configurations().items():
                     # Check if this model is allowed by restrictions
-                    if not restriction_service.is_allowed(provider_type, model_name):
+                    is_allowed = restriction_service.is_allowed(provider_type, model_name)
+                    logger.debug(f"Model {model_name}: allowed={is_allowed}")
+                    if not is_allowed:
                         continue
                     
                     models_shown.append(model_name)
