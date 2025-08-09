@@ -51,10 +51,26 @@ class ModelRestrictionService:
     def __init__(self):
         """Initialize the restriction service by loading from environment."""
         self.restrictions: dict[ProviderType, set[str]] = {}
+        self.global_allowed: set[str] = set()
+        self.global_disabled: set[str] = set()
         self._load_from_env()
 
     def _load_from_env(self) -> None:
         """Load restrictions from environment variables."""
+        # Load global allowed/disabled models first
+        from config import ALLOWED_MODELS, DISABLED_MODELS
+        
+        if ALLOWED_MODELS:
+            self.global_allowed = {model.strip().lower() for model in ALLOWED_MODELS if model.strip()}
+            if self.global_allowed:
+                logger.info(f"Global allowed models: {sorted(self.global_allowed)}")
+        
+        if DISABLED_MODELS:
+            self.global_disabled = {model.strip().lower() for model in DISABLED_MODELS if model.strip()}
+            if self.global_disabled:
+                logger.info(f"Global disabled models: {sorted(self.global_disabled)}")
+        
+        # Then load provider-specific restrictions
         for provider_type, env_var in self.ENV_VARS.items():
             env_value = os.getenv(env_var)
 
@@ -122,8 +138,24 @@ class ModelRestrictionService:
         Returns:
             True if allowed (or no restrictions), False if restricted
         """
+        # Check both the resolved name and original name (if different)
+        names_to_check = {model_name.lower()}
+        if original_name and original_name.lower() != model_name.lower():
+            names_to_check.add(original_name.lower())
+        
+        # First check global disabled list
+        if self.global_disabled and any(name in self.global_disabled for name in names_to_check):
+            return False
+        
+        # Then check global allowed list if it exists
+        if self.global_allowed:
+            # If global allowed list exists, model must be in it
+            if not any(name in self.global_allowed for name in names_to_check):
+                return False
+        
+        # Finally check provider-specific restrictions
         if provider_type not in self.restrictions:
-            # No restrictions for this provider
+            # No provider-specific restrictions
             return True
 
         allowed_set = self.restrictions[provider_type]
@@ -131,11 +163,6 @@ class ModelRestrictionService:
         if len(allowed_set) == 0:
             # Empty set - allowed
             return True
-
-        # Check both the resolved name and original name (if different)
-        names_to_check = {model_name.lower()}
-        if original_name and original_name.lower() != model_name.lower():
-            names_to_check.add(original_name.lower())
 
         # If any of the names is in the allowed set, it's allowed
         return any(name in allowed_set for name in names_to_check)

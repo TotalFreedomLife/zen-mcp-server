@@ -2,6 +2,196 @@
 
 This file contains essential commands and workflows for developing and maintaining the Zen MCP Server when working with Claude. Use these instructions to efficiently run quality checks, manage the server, check logs, and run tests.
 
+## Expert Agent Team for Zen MCP Server Development
+
+### Core Development Team
+
+#### 1. **MCP Protocol Specialist Agent**
+**Role**: Expert in Model Context Protocol implementation and Claude integration
+**Responsibilities**:
+- MCP protocol compliance and JSON-RPC communication
+- Tool registration and schema generation
+- Request/response handling optimization
+- Claude Code CLI integration patterns
+- Prompt engineering for MCP tools
+
+**Focus Areas**:
+- `server.py` - Core MCP server implementation
+- `tools/shared/schema_builders.py` - JSON schema generation
+- MCP protocol error handling and validation
+
+#### 2. **AI Provider Integration Expert Agent**
+**Role**: Specialist in multi-provider AI model integration and routing
+**Responsibilities**:
+- Provider implementation (OpenAI, Gemini, OpenRouter, DIAL, custom)
+- Model capability management and routing logic
+- API authentication and rate limiting
+- Fallback strategies and error recovery
+- Vision and multimodal support
+
+**Focus Areas**:
+- `providers/*.py` - All provider implementations
+- `providers/registry.py` - Provider priority and routing
+- `utils/model_context.py` - Model-specific configurations
+
+#### 3. **Workflow Architecture Expert Agent**
+**Role**: Designs and optimizes multi-step workflows and conversation systems
+**Responsibilities**:
+- Conversation memory and threading optimization
+- Cross-tool workflow orchestration
+- Token allocation and context management
+- State persistence across tool transitions
+- Context revival mechanisms
+
+**Focus Areas**:
+- `utils/conversation_memory.py` - Conversation threading
+- `tools/workflow/base.py` - Workflow foundation
+- Token budget optimization strategies
+
+#### 4. **Testing & Quality Assurance Agent**
+**Role**: Ensures code quality through comprehensive testing
+**Responsibilities**:
+- Unit test development and maintenance
+- End-to-end simulation testing
+- Integration test scenarios
+- Performance benchmarking
+- Code coverage analysis
+
+**Focus Areas**:
+- `simulator_tests/*.py` - Simulation test suite
+- `tests/*.py` - Unit test coverage
+- `communication_simulator_test.py` - E2E framework
+
+#### 5. **Security & Performance Auditor Agent**
+**Role**: Validates security and optimizes performance
+**Responsibilities**:
+- Security vulnerability assessment
+- Path traversal and injection prevention
+- API key management security
+- Performance profiling and optimization
+- Resource usage monitoring
+
+**Focus Areas**:
+- `utils/security_config.py` - Security policies
+- `utils/file_utils.py` - Secure file operations
+- Token and memory optimization
+
+#### 6. **Documentation & DevEx Specialist Agent**
+**Role**: Maintains comprehensive documentation and developer experience
+**Responsibilities**:
+- Technical documentation writing
+- API usage guides and examples
+- Troubleshooting documentation
+- Best practices and patterns
+- Tool usage tutorials
+
+**Focus Areas**:
+- `docs/*.md` - Documentation suite
+- Tool-specific guides in `docs/tools/`
+- Integration examples and tutorials
+
+### Recommended MCP Server Enhancements
+
+#### 1. **Code Analysis MCP Server**
+- Deep static analysis capabilities
+- Dependency graph generation
+- Cyclomatic complexity analysis
+- Dead code detection
+- Architecture validation
+
+#### 2. **Testing Automation MCP Server**
+- Automated test generation
+- Mutation testing
+- Property-based testing
+- Test coverage optimization
+- Regression test selection
+
+#### 3. **Performance Profiling MCP Server**
+- Runtime performance analysis
+- Memory profiling
+- Token usage optimization
+- API call efficiency metrics
+- Bottleneck identification
+
+#### 4. **Documentation Generation MCP Server**
+- API documentation auto-generation
+- Code example extraction
+- Changelog generation
+- README automation
+- Inline documentation validation
+
+#### 5. **Deployment & CI/CD MCP Server**
+- Docker deployment automation
+- GitHub Actions workflow management
+- Release automation
+- Environment configuration management
+- Health monitoring setup
+
+### Agent Collaboration Workflow
+
+When working on the Zen MCP Server:
+
+1. **Initial Analysis**: MCP Protocol Specialist reviews changes for protocol compliance
+2. **Provider Updates**: AI Provider Integration Expert handles new model additions
+3. **Workflow Design**: Workflow Architecture Expert designs conversation flows
+4. **Quality Checks**: Testing & QA Agent runs comprehensive test suites
+5. **Security Review**: Security & Performance Auditor validates changes
+6. **Documentation**: DevEx Specialist updates docs and examples
+
+### Task Assignment Strategy
+
+- **Bug Fixes**: Start with Testing & QA Agent to reproduce, then appropriate specialist
+- **New Features**: Workflow Architecture Expert designs, then implementation by relevant agents
+- **Provider Addition**: AI Provider Integration Expert leads with testing support
+- **Performance Issues**: Security & Performance Auditor profiles, then optimization
+- **Documentation**: DevEx Specialist with input from implementing agents
+
+## Enhanced Configuration for 3-Model Collaboration
+
+### Current Setup (as of latest update)
+
+The Zen MCP Server has been configured with the following enhancements:
+
+#### 1. **Model Restrictions**
+- **Only Most Capable Models**: System configured to use ONLY:
+  - `gpt-5-latest` (OpenAI) - Most advanced GPT-5 model with 400K context
+  - `gemini-2.5-pro` (Google) - Deep reasoning with 1M+ context
+  - `grok-4` (X.AI) - Frontier multimodal reasoning with 256K context
+
+#### 2. **Automatic 3-Model Collaboration**
+- **AUTO_CONSENSUS=true**: Enables automatic consultation with all 3 models
+- **CONSENSUS_MODELS**: Automatically uses gpt-5-latest, gemini-2.5-pro, and grok-4
+- All workflow tools will collaborate between models for verification
+
+#### 3. **Configuration File (.env)**
+```bash
+# Core API Keys
+GEMINI_API_KEY=your-key
+OPENAI_API_KEY=your-key
+XAI_API_KEY=your-key
+
+# Model Configuration
+DEFAULT_MODEL=auto
+ALLOWED_MODELS=gpt-5-latest,gemini-2.5-pro,grok-4
+DISABLED_MODELS=gpt-5,gpt-5-mini,gpt-5-nano,o3,o3-mini,o3-pro,o4-mini,gemini-2.5-flash,grok-3,grok-3-fast
+
+# 3-Model Collaboration
+AUTO_CONSENSUS=true
+CONSENSUS_MODELS=gpt-5-latest,gemini-2.5-pro,grok-4
+```
+
+#### 4. **Provider Updates**
+- **OpenAI Provider**: Added `gpt-5-latest` support, removed lesser models
+- **Gemini Provider**: Configured to always prefer `gemini-2.5-pro`
+- **X.AI Provider**: Configured to always use `grok-4`
+
+#### 5. **Testing**
+Run `python test_configuration.py` to verify:
+- Model availability and restrictions
+- Provider configurations
+- Automatic model selection
+- 3-model collaboration setup
+
 ## Quick Reference Commands
 
 ### Code Quality Checks

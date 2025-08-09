@@ -68,6 +68,16 @@ DEFAULT_THINKING_MODE_THINKDEEP = os.getenv("DEFAULT_THINKING_MODE_THINKDEEP", "
 DEFAULT_CONSENSUS_TIMEOUT = 120.0  # 2 minutes per model
 DEFAULT_CONSENSUS_MAX_INSTANCES_PER_COMBINATION = 2
 
+# Automatic 3-Model Collaboration Settings
+# When enabled, workflow tools will automatically consult all 3 models
+AUTO_CONSENSUS = os.getenv("AUTO_CONSENSUS", "false").lower() == "true"
+CONSENSUS_MODELS = os.getenv("CONSENSUS_MODELS", "gpt-5-latest,gemini-2.5-pro,grok-4").split(",")
+
+# Model Restriction Settings
+# Only allow specific models to be used
+ALLOWED_MODELS = os.getenv("ALLOWED_MODELS", "").split(",") if os.getenv("ALLOWED_MODELS") else []
+DISABLED_MODELS = os.getenv("DISABLED_MODELS", "").split(",") if os.getenv("DISABLED_MODELS") else []
+
 # NOTE: Consensus tool now uses sequential processing for MCP compatibility
 # Concurrent processing was removed to avoid async pattern violations
 
